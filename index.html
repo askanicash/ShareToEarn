@@ -45,6 +45,7 @@
             border-radius: 8px; 
             font-size: 16px; 
             outline: none;
+            box-sizing: border-box;
         }
         input:focus, select:focus { border-color: var(--secondary-color); }
         button { 
@@ -87,6 +88,7 @@
             background: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
         .modal-content {
             background: white;
@@ -119,7 +121,7 @@
     <p>Track your real-time traffic statistics and accumulated revenue below.</p>
     <div class="stats-grid">
         <div class="stat-item">Valid Clicks<span id="displayClicks">0</span></div>
-        <div class="stat-item">Total Balance<span id="displayBalance">$0.000</span></div>
+        <div class="stat-item">Total Balance<span id="displayBalance">$0.0000</span></div>
     </div>
     <button onclick="openWithdrawModal()" style="background: #e74c3c;">Request Payout / Withdrawal</button>
 </div>
@@ -128,44 +130,45 @@
 <div class="modal" id="withdrawModal">
     <div class="modal-content">
         <h3 style="margin-top:0;">💳 Withdraw Your Earnings</h3>
-        <p>Minimum payout milestone is $5.000. Please enter your payment details below.</p>
+        <p>Minimum payout milestone is $0.2000 (1,000 Clicks). Please enter your details below.</p>
         
-        <label>Select Payment Method:</label>
+        <label style="font-weight: bold; display: block; margin-top: 10px;">Select Payment Method:</label>
         <select id="walletMethod">
             <option value="EasyPaisa">EasyPaisa</option>
             <option value="JazzCash">JazzCash</option>
-            <option value="Binance Pay">Binance Pay (USDT)</option>
+            <option value="UPaisa">UPaisa</option>
+            <option value="FaucetPay">FaucetPay</option>
         </select>
 
-        <label>Account Title / Name:</label>
+        <label style="font-weight: bold; display: block; margin-top: 10px;">Account Title / Name:</label>
         <input type="text" id="walletName" placeholder="e.g. Muhammad Ali">
 
-        <label>Account Number / ID:</label>
-        <input type="text" id="walletNumber" placeholder="e.g. 03001234567">
+        <label style="font-weight: bold; display: block; margin-top: 10px;">Account Number / Wallet ID:</label>
+        <input type="text" id="walletNumber" placeholder="e.g. 03001234567 or FaucetPay Email">
 
-        <button onclick="submitWithdrawal()" style="margin-top: 10px;">Submit Payout Request</button>
+        <button onclick="submitWithdrawal()" style="margin-top: 15px;">Submit To WhatsApp</button>
         <button onclick="closeWithdrawModal()" style="background:#7f8c8d; margin-top: 8px;">Cancel</button>
     </div>
 </div>
 
 <script>
-    // Global Configuration
-    const PAY_PER_CLICK = 0.005; // 1 click = $0.005 (1000 clicks = $5)
-    const MIN_WITHDRAW = 5.00;   // Minimum withdrawal limit
+    // Configuration Settings
+    const PAY_PER_CLICK = 0.0002; // 1 click = $0.0002 ($0.20 per 1000 clicks)
+    const MIN_WITHDRAW = 0.20;    // Minimum withdrawal milestone ($0.20)
     
-    // YAHAN APNA ADSTERRA DIRECT AD LINK DIJIYE
+    // !!! SET YOUR WHATSAPP NUMBER HERE (Country code ke sath, bina '+' sign ke) !!!
+    const ADMIN_WHATSAPP_NUMBER = "923001234567"; 
+    
+    // !!! SET YOUR ADSTERRA DIRECT AD LINK HERE !!!
     const ADSTERRA_DIRECT_LINK = "https://example-ad-link.com"; 
-    
-    // YAHAN APNA GOOGLE FORM LINK CATCHER DALIEGE (Main agle step me bataunga)
-    const GOOGLE_FORM_URL = "https://google.com";
 
-    // Load stats from LocalStorage
+    // Load static persistent user data from localStorage
     let userClicks = parseInt(localStorage.getItem('linkProfit_clicks')) || 0;
-    let userBalance = parseFloat(localStorage.getItem('linkProfit_balance')) || 0.000;
+    let userBalance = parseFloat(localStorage.getItem('linkProfit_balance')) || 0.0000;
 
-    // Update UI on load
+    // Refresh display
     document.getElementById('displayClicks').innerText = userClicks;
-    document.getElementById('displayBalance').innerText = "$" + userBalance.toFixed(3);
+    document.getElementById('displayBalance').innerText = "$" + userBalance.toFixed(4);
 
     function generateEarningLink() {
         let inputUrl = document.getElementById('userUrl').value;
@@ -173,8 +176,8 @@
             alert("Please enter a valid URL starting with http:// or https://");
             return;
         }
-        let currentSiteUrl = window.location.href.split('?')[0];
-        let shareableLink = currentSiteUrl + "?dest=" + encodeURIComponent(inputUrl);
+        let currentSiteUrl = window.location.href.split('?');
+        let shareableLink = currentSiteUrl[0] + "?dest=" + encodeURIComponent(inputUrl);
         
         let outputBox = document.getElementById('resultLinkBox');
         outputBox.innerText = shareableLink;
@@ -183,7 +186,7 @@
 
     function openWithdrawModal() {
         if(userBalance < MIN_WITHDRAW) {
-            alert("Insufficient Balance! Minimum withdrawal limit is $5.000. Your current balance is $" + userBalance.toFixed(3));
+            alert("Insufficient Balance! Minimum withdrawal limit is $0.2000 (1,000 Clicks). Your current balance is $" + userBalance.toFixed(4));
             return;
         }
         document.getElementById('withdrawModal').style.display = 'flex';
@@ -203,12 +206,32 @@
             return;
         }
 
-        // Send data to Google Form automatically (Agle step me configured hoga)
-        alert("Processing Withdrawal Order Request...\n\nMethod: " + method + "\nName: " + name + "\nAmount: $" + userBalance.toFixed(3) + "\n\nYour request has been successfully dispatched to the Admin Panel!");
+        // 1. Create a dynamic pre-written message string for WhatsApp
+        let messageText = `Hello Admin, I want to withdraw my LinkProfit earnings.\n\n` +
+                          `• Payout Method: ${method}\n` +
+                          `• Account Name: ${name}\n` +
+                          `• Account/ID Number: ${num}\n` +
+                          `• Total Requested Amount: $${userBalance.toFixed(4)}`;
+        
+        let encodedMessage = encodeURIComponent(messageText);
+        let whatsappUrl = `https://wa.me{ADMIN_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+        // 2. CUT THE BALANCE FROM USER DISPLAY IMMEDIATELY
+        userClicks = 0;
+        userBalance = 0.0000;
+        localStorage.setItem('linkProfit_clicks', userClicks);
+        localStorage.setItem('linkProfit_balance', userBalance);
+
+        // Update main dashboard UI instantly
+        document.getElementById('displayClicks').innerText = userClicks;
+        document.getElementById('displayBalance').innerText = "$0.0000";
+
+        // 3. Launch WhatsApp link submission
         closeWithdrawModal();
+        window.open(whatsappUrl, '_blank');
     }
 
-    // CHECK TRAFFIC & REDIRECTION WITH 24-HOUR IP LOCK EFFECT
+    // CHECK FOR USER SESSIONS AND REDIRECT (24-Hour Unique Session Verification)
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         const destinationUrl = urlParams.get('dest');
@@ -216,35 +239,16 @@
         if (destinationUrl) {
             const lastClickTime = localStorage.getItem('last_click_timestamp');
             const currentTime = new Date().getTime();
-            const twentyFourHours = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds
+            const twentyFourHours = 24 * 60 * 60 * 1000; // Time interval lock
 
-            // Check if 24 hours have passed since last click
             if (!lastClickTime || (currentTime - lastClickTime > twentyFourHours)) {
                 
-                // 1. Log click and award earning
+                // Add secure counts and earnings
                 userClicks += 1;
                 userBalance += PAY_PER_CLICK;
                 localStorage.setItem('linkProfit_clicks', userClicks);
                 localStorage.setItem('linkProfit_balance', userBalance);
                 localStorage.setItem('last_click_timestamp', currentTime);
 
-                // UI loading frame view
+                // View custom screen loader frame
                 document.body.innerHTML = `
-                    <div style='display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;'>
-                        <h2 style='font-size: 24px; color: #2c3e50;'>Loading Your Secure Destination Link...</h2>
-                        <p style='font-size: 16px; color: #7f8c8d;'>Please wait 5 seconds while we verify your secure dynamic session...</p>
-                    </div>
-                `;
-                
-                // 2. Open Adsterra Direct Ad Link
-                window.open(ADSTERRA_DIRECT_LINK, '_blank');
-                
-                // 3. Redirect to real link after 5 seconds
-                setTimeout(function() {
-                    window.location.href = destinationUrl;
-                }, 5000);
-
-            } else {
-                // Duplicate Click within 24 Hours (No Ad, No Earning, Direct Route)
-                document.body.innerHTML = `
-                    <div style='display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;'>
