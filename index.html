@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkProfit - Share Links & Earn Money</title>
+    <style>
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #3498db;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--light-color); 
+            text-align: center; 
+            margin: 0; 
+            padding: 0; 
+            color: var(--dark-color);
+        }
+        .header { 
+            background: var(--dark-color); 
+            color: white; 
+            padding: 25px; 
+            font-size: 26px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .container { 
+            max-width: 550px; 
+            margin: 30px auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
+        h2 { margin-top: 0; color: var(--dark-color); font-size: 22px; }
+        p { color: #7f8c8d; font-size: 15px; line-height: 1.5; }
+        input { 
+            width: 90%; 
+            padding: 12px; 
+            margin: 15px 0; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            outline: none;
+        }
+        input:focus { border-color: var(--secondary-color); }
+        button { 
+            background: var(--primary-color); 
+            color: white; 
+            border: none; 
+            padding: 14px 20px; 
+            font-size: 16px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 95%; 
+            font-weight: bold; 
+            transition: 0.3s;
+        }
+        button:hover { filter: brightness(0.9); }
+        .output-box { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #e8f4fd; 
+            border: 2px dashed var(--secondary-color); 
+            border-radius: 8px;
+            display: none; 
+            word-break: break-all; 
+            font-weight: bold; 
+            color: var(--dark-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">💰 LinkProfit</div>
+
+<div class="container">
+    <h2>Shorten Your Link & Earn</h2>
+    <p>Paste any URL below, click "Convert", and share the generated link with your friends to start earning money.</p>
+    
+    <input type="text" id="userUrl" placeholder="https://example.com">
+    <button onclick="generateEarningLink()">Convert To Earning Link</button>
+    
+    <div class="output-box" id="resultLinkBox"></div>
+</div>
+
+<div class="container">
+    <h2>How to Withdraw Money?</h2>
+    <p>Once you reach the minimum milestone of 1,000 clicks, you can claim your earnings directly to your local wallet or account.</p>
+    <!-- Replace '#' with your actual WhatsApp link or Google Form link later -->
+    <button onclick="window.open('#', '_blank')" style="background: #e74c3c;">Request Payout / Withdrawal</button>
+</div>
+
+<script>
+    function generateEarningLink() {
+        let inputUrl = document.getElementById('userUrl').value;
+        if(inputUrl === "" || !inputUrl.startsWith("http")) {
+            alert("Please enter a valid URL starting with http:// or https://");
+            return;
+        }
+        
+        // YOUR ADSTERRA DIRECT AD LINK PLACEHOLDER
+        let adNetworkLink = "https://example-ad-link.com"; 
+        
+        // Creating the redirection URL pattern
+        let currentSiteUrl = window.location.href.split('?')[0];
+        let shareableLink = currentSiteUrl + "?ad=" + encodeURIComponent(adNetworkLink) + "&dest=" + encodeURIComponent(inputUrl);
+        
+        let outputBox = document.getElementById('resultLinkBox');
+        outputBox.innerText = shareableLink;
+        outputBox.style.display = "block";
+    }
+
+    // Checking for redirection query parameters when a user clicks the shared link
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const adUrl = urlParams.get('ad');
+        const destinationUrl = urlParams.get('dest');
+        
+        if (adUrl && destinationUrl) {
+            document.body.innerHTML = `
+                <div style='display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;'>
+                    <h2 style='font-size: 24px; color: #2c3e50;'>Loading Your Destination...</h2>
+                    <p style='font-size: 16px; color: #7f8c8d;'>Please wait 5 seconds while we process your secure link...</p>
+                </div>
+            `;
+            
+            // Opens the advertisement link in a new window/tab
+            window.open(adUrl, '_blank');
+            
+            // Redirects to the actual destination URL after 5 seconds
+            setTimeout(function() {
+                window.location.href = destinationUrl;
+            }, 5000);
+        }
+    }
+</script>
+
+</body>
+</html>
+
