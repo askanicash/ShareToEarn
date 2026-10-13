@@ -73,7 +73,7 @@
         <h1>⚡ EarnHub Pro</h1>
         <div class="balance-box"><span id="userPoints">0</span> Pts</div>
         <div class="currency-info">≈ <span id="userPkr">Rs. 0</span> | <span id="userUsd">$0.00</span></div>
-        <div class="min-withdraw">Minimum Payout: 500 Points (Rs. 50 / $0.18)</div>
+        <div class="min-withdraw">Minimum Payout: 1000 Points ($0.10 / Rs. 28)</div>
     </div>
 
     <!-- Daily Bonus & WhatsApp Channel Section -->
@@ -126,7 +126,7 @@
 
         <div class="form-group">
             <label>Points to Withdraw</label>
-            <input type="number" id="withdrawPoints" placeholder="Min 500 points">
+            <input type="number" id="withdrawPoints" placeholder="Min 1000 points">
         </div>
 
         <button class="btn-withdraw" onclick="requestWithdrawal()">Withdraw via WhatsApp 🚀</button>
@@ -167,9 +167,9 @@
     
     function updateUI() {
         document.getElementById('userPoints').innerText = points;
-        // Calculation: 500 Points = Rs. 50 (1 Point = Rs. 0.1) -> 1 USD = 280 PKR roughly, so let's compute accurately
-        let pkr = points * 0.1; // 500 * 0.1 = Rs. 50
-        let usd = pkr / 280;   // converting to dollars approx
+        // Calculation: 1000 Points = $0.10 USD (Rs. 28 approx)
+        let usd = (points / 1000) * 0.10;
+        let pkr = usd * 280;
         document.getElementById('userPkr').innerText = `Rs. ${pkr.toFixed(1)}`;
         document.getElementById('userUsd').innerText = `$${usd.toFixed(2)}`;
     }
@@ -292,8 +292,8 @@
             alert("Please enter your account details!");
             return;
         }
-        if(isNaN(wPts) || wPts < 500) {
-            alert("Minimum withdrawal limit is 500 points (Rs. 50)!");
+        if(isNaN(wPts) || wPts < 1000) {
+            alert("Minimum withdrawal limit is 1000 points ($0.10)!");
             return;
         }
         if(wPts > points) {
@@ -305,8 +305,9 @@
         localStorage.setItem('user_points', points);
         updateUI();
 
-        let reqPkr = wPts * 0.1;
-        let msg = `*New Withdrawal Request*%0A%0AMethod: ${method}%0AAccount: ${details}%0APoints Deducted: ${wPts}%0AAmount: Rs. ${reqPkr}%0AStatus: Pending`;
+        let reqUsd = (wPts / 1000) * 0.10;
+        let reqPkr = reqUsd * 280;
+        let msg = `*New Withdrawal Request*%0A%0AMethod: ${method}%0AAccount: ${details}%0APoints Deducted: ${wPts}%0AAmount: $${reqUsd.toFixed(2)} (Rs. ${reqPkr.toFixed(1)})%0AStatus: Pending`;
         window.open(`https://wa.me/${adminWhatsApp}?text=${msg}`, '_blank');
 
         alert("Withdrawal request sent successfully! Points deducted.");
