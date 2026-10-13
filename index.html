@@ -11,6 +11,7 @@
             --accent: #6366f1;
             --accent-hover: #4f46e5;
             --success: #10b981;
+            --warning: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #1e293b;
@@ -27,7 +28,8 @@
         /* Header Card */
         .header-card { background: linear-gradient(135deg, #1e1b4b 0%, #131c31 100%); border: 1px solid #312e81; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.2); }
         .header-card h1 { font-size: 20px; color: #818cf8; margin-bottom: 5px; }
-        .balance-box { font-size: 32px; font-weight: 800; color: var(--success); margin: 10px 0; text-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        .balance-box { font-size: 32px; font-weight: 800; color: var(--success); margin: 8px 0 4px 0; text-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        .currency-info { font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px; }
         .min-withdraw { font-size: 12px; color: var(--text-muted); }
 
         /* Section Styling */
@@ -46,6 +48,9 @@
         .action-btn { background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block; text-align: center; }
         .action-btn:hover { background: var(--accent-hover); }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
+        .btn-warning { background: var(--warning); color: #0f172a; font-weight: 700; }
+        .btn-warning:hover { background: #d97706; }
 
         /* Form Inputs */
         .form-group { margin-bottom: 12px; }
@@ -67,7 +72,23 @@
     <div class="header-card">
         <h1>⚡ EarnHub Pro</h1>
         <div class="balance-box"><span id="userPoints">0</span> Pts</div>
-        <div class="min-withdraw">Minimum Payout: 500 Points</div>
+        <div class="currency-info">≈ <span id="userPkr">Rs. 0</span> | <span id="userUsd">$0.00</span></div>
+        <div class="min-withdraw">Minimum Payout: 500 Points (Rs. 50 / $0.18)</div>
+    </div>
+
+    <!-- Daily Bonus & WhatsApp Channel Section -->
+    <div class="section-card">
+        <div class="section-title">🎁 Special Rewards & Support</div>
+        
+        <div class="task-row" style="margin-bottom: 8px;">
+            <div class="task-info">Daily Login Bonus <span>+50 Points</span></div>
+            <button class="action-btn btn-warning" id="dailyBonusBtn" onclick="claimDailyBonus()">Claim</button>
+        </div>
+
+        <div class="task-row">
+            <div class="task-info">Join WhatsApp Channel <span>Official Updates</span></div>
+            <a href="https://whatsapp.com/channel/YOUR_WHATSAPP_CHANNEL_LINK" target="_blank" class="action-btn" style="background: #25d366; color: #0f172a;">Join</a>
+        </div>
     </div>
 
     <!-- Click to Earn Section (10 Tasks) -->
@@ -143,7 +164,16 @@
     };
 
     let points = localStorage.getItem('user_points') ? parseInt(localStorage.getItem('user_points')) : 0;
-    document.getElementById('userPoints').innerText = points;
+    
+    function updateUI() {
+        document.getElementById('userPoints').innerText = points;
+        // Calculation: 500 Points = Rs. 50 (1 Point = Rs. 0.1) -> 1 USD = 280 PKR roughly, so let's compute accurately
+        let pkr = points * 0.1; // 500 * 0.1 = Rs. 50
+        let usd = pkr / 280;   // converting to dollars approx
+        document.getElementById('userPkr').innerText = `Rs. ${pkr.toFixed(1)}`;
+        document.getElementById('userUsd').innerText = `$${usd.toFixed(2)}`;
+    }
+    updateUI();
 
     // Generate 10 Click Tasks (20 Points each)
     const clickList = document.getElementById('clickTasksList');
@@ -174,6 +204,14 @@
         let now = Date.now();
         let dayLimit = 24 * 60 * 60 * 1000;
 
+        // Daily Bonus Check
+        let lastBonus = localStorage.getItem('daily_bonus_time');
+        if (lastBonus && (now - parseInt(lastBonus) < dayLimit)) {
+            let bBtn = document.getElementById('dailyBonusBtn');
+            bBtn.disabled = true;
+            bBtn.innerText = "Claimed";
+        }
+
         for (let i = 1; i <= 10; i++) {
             let t = localStorage.getItem(`click_time_${i}`);
             if (t && (now - parseInt(t) < dayLimit)) {
@@ -193,13 +231,25 @@
     }
     checkStatus();
 
+    function claimDailyBonus() {
+        points += 50;
+        localStorage.setItem('user_points', points);
+        localStorage.setItem('daily_bonus_time', Date.now());
+        updateUI();
+        
+        let bBtn = document.getElementById('dailyBonusBtn');
+        bBtn.disabled = true;
+        bBtn.innerText = "Claimed";
+        alert("Daily Bonus Claimed! +50 Points added.");
+    }
+
     function doClickTask(id, reward) {
         window.open(clickLinks[id], '_blank');
 
         points += reward;
         localStorage.setItem('user_points', points);
         localStorage.setItem(`click_time_${id}`, Date.now());
-        document.getElementById('userPoints').innerText = points;
+        updateUI();
         
         let btn = document.getElementById(`click_${id}`);
         btn.disabled = true;
@@ -212,7 +262,7 @@
         points += reward;
         localStorage.setItem('user_points', points);
         localStorage.setItem(`video_time_${id}`, Date.now());
-        document.getElementById('userPoints').innerText = points;
+        updateUI();
         
         let btn = document.getElementById(`video_${id}`);
         btn.disabled = true;
@@ -243,7 +293,7 @@
             return;
         }
         if(isNaN(wPts) || wPts < 500) {
-            alert("Minimum withdrawal limit is 500 points!");
+            alert("Minimum withdrawal limit is 500 points (Rs. 50)!");
             return;
         }
         if(wPts > points) {
@@ -253,9 +303,10 @@
 
         points -= wPts;
         localStorage.setItem('user_points', points);
-        document.getElementById('userPoints').innerText = points;
+        updateUI();
 
-        let msg = `*New Withdrawal Request*%0A%0AMethod: ${method}%0AAccount: ${details}%0APoints Deducted: ${wPts}%0AStatus: Pending`;
+        let reqPkr = wPts * 0.1;
+        let msg = `*New Withdrawal Request*%0A%0AMethod: ${method}%0AAccount: ${details}%0APoints Deducted: ${wPts}%0AAmount: Rs. ${reqPkr}%0AStatus: Pending`;
         window.open(`https://wa.me/${adminWhatsApp}?text=${msg}`, '_blank');
 
         alert("Withdrawal request sent successfully! Points deducted.");
