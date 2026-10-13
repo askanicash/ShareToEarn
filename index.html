@@ -1,52 +1,246 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#102b25">
-<title>EarnZone — Demo</title>
-<style>
-:root{--bg:#f3f7f5;--card:#fff;--ink:#172b26;--muted:#6b7b75;--green:#087f5b;--lime:#c8f169;--line:#e1eae5}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:linear-gradient(135deg,#102b25,#087f5b);color:white;padding:24px 18px 30px;border-radius:0 0 26px 26px}
-.top{display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:auto}.logo{font-size:22px;font-weight:850;letter-spacing:-.6px}.demo{font-size:11px;background:#ffffff20;border:1px solid #ffffff45;border-radius:99px;padding:6px 9px}
-main{max-width:760px;margin:-12px auto 40px;padding:0 14px}.balance{background:white;border-radius:20px;padding:20px;box-shadow:0 8px 30px #173b2b0b}.label{font-size:12px;color:var(--muted)}.amount{font-size:34px;font-weight:850;letter-spacing:-1px;margin:4px 0}.sub{font-size:12px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:17px}.stat{background:#f5f8f6;border-radius:12px;padding:10px}.stat b{display:block;font-size:16px}.stat span{font-size:11px;color:var(--muted)}
-.nav{display:flex;gap:8px;overflow:auto;padding:17px 0 12px}.nav button{white-space:nowrap;border:1px solid var(--line);background:white;color:var(--ink);border-radius:99px;padding:10px 14px;font-weight:700}.nav button.active{background:var(--green);border-color:var(--green);color:white}
-.section{display:none}.section.active{display:block}.heading{font-size:19px;margin:10px 0 4px}.hint{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;min-width:0}.emoji{font-size:24px}.card h3{font-size:15px;margin:9px 0 5px}.card p{font-size:12px;color:var(--muted);line-height:1.45;min-height:35px;margin:0 0 12px}.reward{font-weight:800;color:var(--green);font-size:13px;margin-bottom:10px}
-button.primary{border:0;background:var(--green);color:white;font-weight:750;border-radius:11px;padding:11px 13px;width:100%;cursor:pointer}button.primary:disabled{opacity:.45}button.light{border:1px solid var(--line);background:#f5f8f6;color:var(--ink);font-weight:700;border-radius:11px;padding:10px 12px;width:100%}
-.formcard{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}input,select{width:100%;border:1px solid #d8e4dd;border-radius:10px;padding:12px;font:inherit;background:white;color:var(--ink)}.notice{padding:12px;border-radius:12px;background:#fff7df;color:#765316;font-size:12px;line-height:1.5;margin:12px 0}.success{background:#e5f8ed;color:#12623d}.history{font-size:13px;line-height:1.7;overflow-wrap:anywhere}.empty{color:var(--muted);font-size:13px;padding:14px 0}footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
-@media(max-width:420px){.grid{grid-template-columns:1fr}.stats{gap:6px}.stat{padding:9px}.amount{font-size:30px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earn & Win - Instant Payouts</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .main-wrapper { max-width: 500px; width: 100%; margin: 0 auto; }
+        
+        /* Banner Ads Styling */
+        .banner-ad { background: #1e293b; border: 2px dashed #475569; color: #94a3b8; text-align: center; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; font-weight: bold; }
+
+        .container { background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-bottom: 15px; }
+        h1 { text-align: center; margin-bottom: 15px; color: #38bdf8; font-size: 22px; }
+        
+        .card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .balance { font-size: 26px; font-weight: bold; color: #4ade80; margin-top: 5px; }
+        
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 8px; }
+        .btn-task { background: #3b82f6; color: white; }
+        .btn-task:hover { background: #2563eb; }
+        .btn-task:disabled { background: #64748b; cursor: not-allowed; }
+        .btn-withdraw { background: #10b981; color: white; }
+        .btn-withdraw:hover { background: #059669; }
+        
+        select, input { width: 100%; padding: 10px; margin-top: 6px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 14px; }
+        label { display: block; text-align: left; margin-top: 8px; font-size: 13px; color: #cbd5e1; }
+        .timer { font-size: 12px; color: #facc15; margin-top: 4px; }
+        
+        .section-title { font-size: 16px; color: #38bdf8; margin-bottom: 10px; border-bottom: 1px solid #475569; padding-bottom: 5px; text-align: left; }
+        .task-item { background: #1e293b; padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .task-info { text-align: left; font-size: 13px; }
+        .task-info span { display: block; color: #94a3b8; font-size: 11px; }
+        .task-btn { width: auto; padding: 8px 12px; font-size: 13px; margin-top: 0; background: #8b5cf6; }
+        .task-btn:hover { background: #7c3aed; }
+        .task-btn:disabled { background: #64748b; }
+    </style>
 </head>
 <body>
-<header><div class="top"><div class="logo">🟢 EarnZone</div><span class="demo">DEMO VERSION</span></div><div style="max-width:760px;margin:18px auto 0"><div style="font-size:13px;color:#d7eee5">Welcome to your rewards hub</div><div style="font-size:25px;font-weight:800;margin-top:3px">Small tasks. Trackable rewards.</div></div></header>
-<main>
-<div class="balance"><div class="label">DEMO COIN BALANCE</div><div class="amount"><span id="balance">0</span> <span style="font-size:15px;color:var(--green)">coins</span></div><div class="sub">Demo coins have no cash value and cannot be paid out.</div><div class="stats"><div class="stat"><b id="tasksDone">0</b><span>Tasks claimed</span></div><div class="stat"><b id="refCount">0</b><span>Referrals (demo)</span></div><div class="stat"><b>500</b><span>Demo withdrawal minimum</span></div></div></div>
-<nav class="nav"><button class="active" data-tab="earn">Earn</button><button data-tab="tasks">Tasks</button><button data-tab="referral">Referral</button><button data-tab="withdraw">Withdraw</button><button data-tab="history">History</button></nav>
-<section class="section active" id="earn"><h2 class="heading">Earn rewards</h2><p class="hint">These buttons simulate tasks for testing. No ads are served and no real money is earned.</p><div class="grid">
-<div class="card"><div class="emoji">▶️</div><h3>Rewarded ad demo</h3><p>Test the claim flow before connecting an approved rewarded-ad provider.</p><div class="reward">+10 demo coins</div><button class="primary claim" data-id="ad" data-reward="10">Claim demo reward</button></div>
-<div class="card"><div class="emoji">🌐</div><h3>Website visit demo</h3><p>Simulated visit task. Real tasks need a provider that permits incentivized traffic.</p><div class="reward">+5 demo coins</div><button class="primary claim" data-id="visit" data-reward="5">Complete demo task</button></div>
-<div class="card"><div class="emoji">🧩</div><h3>Offer / task demo</h3><p>Preview the task flow; no external offer is currently connected.</p><div class="reward">+15 demo coins</div><button class="primary claim" data-id="offer" data-reward="15">Claim demo reward</button></div>
-<div class="card"><div class="emoji">👥</div><h3>Referral demo</h3><p>Copy your sample referral code. Real referrals need accounts and server-side tracking.</p><div class="reward">Sample code: EZ-DEMO</div><button class="primary" id="copyRef">Copy sample code</button></div>
-</div></section>
-<section class="section" id="tasks"><h2 class="heading">Available tasks</h2><p class="hint">Demo tasks can be claimed once each in this browser. This is not secure account-level tracking.</p><div class="formcard"><b>Daily check-in</b><p class="hint">Try the daily reward flow.</p><div class="reward">+2 demo coins</div><button class="primary claim" data-id="daily" data-reward="2">Claim check-in</button></div><div class="formcard"><b>Website visit sample</b><p class="hint">No paid visit is being counted or verified.</p><div class="reward">+5 demo coins</div><button class="primary claim" data-id="visit2" data-reward="5">Complete sample</button></div></section>
-<section class="section" id="referral"><h2 class="heading">Invite friends</h2><p class="hint">This is only a UI preview. The demo does not create accounts or track referrals.</p><div class="formcard"><label>Your sample referral code</label><input id="refCode" value="EZ-DEMO-2026" readonly><button class="primary" id="copyRef2" style="margin-top:10px">Copy referral code</button><div class="notice">Never promise referral earnings until the app has real users, anti-fraud checks, and a funded rewards budget.</div></div></section>
-<section class="section" id="withdraw"><h2 class="heading">Withdrawal request preview</h2><p class="hint">Submitting here saves a demo request only on this device. It does not send money or notify an admin.</p><div class="formcard"><div class="notice">Demo only: minimum 500 coins. No real payment details are sent anywhere. Do not enter your real wallet or phone number.</div><label>Payment method</label><select id="method"><option>Easypaisa (demo)</option><option>JazzCash (demo)</option><option>FaucetPay (demo)</option><option>Crypto wallet (demo)</option></select><label>Demo account label (not real details)</label><input id="payee" placeholder="e.g. test-wallet-123" maxlength="40"><label>Coins to request</label><input id="withdrawAmount" type="number" min="500" step="1" value="500"><button class="primary" id="withdrawBtn" style="margin-top:14px">Create demo request</button><p class="hint" id="withdrawMsg" style="margin-top:10px"></p></div></section>
-<section class="section" id="history"><h2 class="heading">Activity history</h2><p class="hint">Saved only in this browser using local storage. Clearing browser data may erase it.</p><div class="formcard history" id="historyList">No activity yet.</div><button class="light" id="reset" style="margin-top:8px">Reset demo data</button></section>
-<footer>EarnZone demo • Not a real earning or payment service • Production requires secure backend and provider approval.</footer>
-</main>
+
+<div class="main-wrapper">
+    <!-- Top Banner Ad -->
+    <div class="banner-ad">
+        📢 Top Banner Ad Space (Adsterra / Google Ads)
+    </div>
+
+    <div class="container">
+        <h1>Earn & Win Dashboard</h1>
+        
+        <div class="card">
+            <p>Your Total Balance</p>
+            <div class="balance"><span id="userPoints">0</span> Points</div>
+            <p style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Minimum Withdraw: 500 Points</p>
+        </div>
+
+        <!-- Click to Earn Tasks Section (10 Tasks) -->
+        <div class="card" style="text-align: left;">
+            <div class="section-title">🖱️ Click To Earn Tasks (10 Tasks)</div>
+            <div id="clickTasksList"></div>
+        </div>
+
+        <!-- Watch Video Ads Tasks Section (5 Tasks) -->
+        <div class="card" style="text-align: left;">
+            <div class="section-title">📺 Watch Video Ads Tasks (5 Tasks)</div>
+            <div id="videoTasksList"></div>
+        </div>
+
+        <!-- Withdrawal Section -->
+        <div class="card" style="text-align: left;">
+            <div class="section-title">💳 Request Withdrawal</div>
+            
+            <label>Select Payment Method:</label>
+            <select id="payMethod" onchange="updateAccountPlaceholder()">
+                <option value="JazzCash">JazzCash</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+                <option value="SadaPay">SadaPay</option>
+                <option value="FaucetPay">FaucetPay (Email/ID)</option>
+                <option value="WebMoney">WebMoney (Z-Wallet)</option>
+                <option value="Binance">Binance Pay ID / USDT</option>
+            </select>
+
+            <label>Account Number / Details:</label>
+            <input type="text" id="accountDetails" placeholder="Enter your JazzCash number">
+
+            <label>Points to Withdraw:</label>
+            <input type="number" id="withdrawPoints" placeholder="Min 500 points">
+
+            <button class="btn-withdraw" onclick="requestWithdrawal()">Withdraw via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Bottom Banner Ad -->
+    <div class="banner-ad">
+        📢 Bottom Banner Ad Space (Adsterra / Google Ads)
+    </div>
+</div>
+
 <script>
-const KEY='earnzone_demo_v1';
-let state={balance:0,claimed:[],history:[],requests:[],referrals:0};
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved)state={...state,...saved}}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){} render()}
-function addHistory(msg){state.history.unshift(new Date().toLocaleString()+' — '+msg);state.history=state.history.slice(0,30)}
-function render(){document.getElementById('balance').textContent=state.balance;document.getElementById('tasksDone').textContent=state.claimed.length;document.getElementById('refCount').textContent=state.referrals;document.querySelectorAll('.claim').forEach(b=>{let used=state.claimed.includes(b.dataset.id);b.disabled=used;b.textContent=used?'Already claimed':b.dataset.id==='daily'?'Claim check-in':b.dataset.id==='visit'||b.dataset.id==='visit2'?'Complete demo task':'Claim demo reward'});document.getElementById('historyList').innerHTML=state.history.length?state.history.map(x=>'<div>• '+esc(x)+'</div>').join(''):'No activity yet.'}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab))}));
-document.querySelectorAll('.claim').forEach(b=>b.addEventListener('click',()=>{if(state.claimed.includes(b.dataset.id))return;state.claimed.push(b.dataset.id);state.balance+=Number(b.dataset.reward);addHistory('Demo reward claimed: +'+b.dataset.reward+' coins ('+b.dataset.id+')');save()}));
-function copy(text){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(()=>alert('Copied!')).catch(()=>prompt('Copy this text:',text));else prompt('Copy this text:',text)}
-document.getElementById('copyRef').onclick=()=>copy('EZ-DEMO');document.getElementById('copyRef2').onclick=()=>copy(document.getElementById('refCode').value);
-document.getElementById('withdrawBtn').onclick=()=>{let amount=Math.floor(Number(document.getElementById('withdrawAmount').value));let payee=document.getElementById('payee').value.trim();let msg=document.getElementById('withdrawMsg');if(!Number.isFinite(amount)||amount<500){msg.textContent='Minimum demo request is 500 coins.';return}if(amount>state.balance){msg.textContent='Not enough demo coins in your balance.';return}if(!payee){msg.textContent='Enter a sample label only (not real payment details).';return}state.balance-=amount;let req={id:'DEMO-'+(state.requests.length+1),amount,method:document.getElementById('method').value,status:'Demo only — not paid'};state.requests.push(req);addHistory('Created '+req.id+' for '+amount+' demo coins; '+req.status);save();msg.textContent=req.id+' created locally. No money was sent.';document.getElementById('payee').value=''};
-document.getElementById('reset').onclick=()=>{if(confirm('Reset all local demo data?')){state={balance:0,claimed:[],history:[],requests:[],referrals:0};save()}};
-render();
-</script></body></html>
+    // Yahan apna WhatsApp number likhein (Country code ke sath, bina '+' ke, jaise 923001234567)
+    const adminWhatsApp = "923001234567"; 
+
+    let points = localStorage.getItem('user_points') ? parseInt(localStorage.getItem('user_points')) : 0;
+    document.getElementById('userPoints').innerText = points;
+
+    // Load Click Tasks (10 Tasks)
+    const clickTasksList = document.getElementById('clickTasksList');
+    for (let i = 1; i <= 10; i++) {
+        let taskDiv = document.createElement('div');
+        taskDiv.className = 'task-item';
+        taskDiv.innerHTML = `
+            <div class="task-info">
+                Click Task #${i}
+                <span>Reward: +50 Points</span>
+            </div>
+            <button class="task-btn" id="clickTask_${i}" onclick="completeClickTask(${i}, 50)">Claim</button>
+        `;
+        clickTasksList.appendChild(taskDiv);
+    }
+
+    // Load Video Tasks (5 Tasks)
+    const videoTasksList = document.getElementById('videoTasksList');
+    for (let i = 1; i <= 5; i++) {
+        let taskDiv = document.createElement('div');
+        taskDiv.className = 'task-item';
+        taskDiv.innerHTML = `
+            <div class="task-info">
+                Watch Video Ad #${i}
+                <span>Reward: +100 Points</span>
+            </div>
+            <button class="task-btn" id="videoTask_${i}" onclick="completeVideoTask(${i}, 100)">Watch</button>
+        `;
+        videoTasksList.appendChild(taskDiv);
+    }
+
+    // Check Cooldown on Load
+    function checkCooldowns() {
+        let now = Date.now();
+        let twentyFourHours = 24 * 60 * 60 * 1000;
+
+        // Check Click Tasks
+        for (let i = 1; i <= 10; i++) {
+            let lastTime = localStorage.getItem(`click_task_${i}_time`);
+            if (lastTime && (now - parseInt(lastTime) < twentyFourHours)) {
+                let btn = document.getElementById(`clickTask_${i}`);
+                btn.disabled = true;
+                btn.innerText = "Done";
+            }
+        }
+
+        // Check Video Tasks
+        for (let i = 1; i <= 5; i++) {
+            let lastTime = localStorage.getItem(`video_task_${i}_time`);
+            if (lastTime && (now - parseInt(lastTime) < twentyFourHours)) {
+                let btn = document.getElementById(`videoTask_${i}`);
+                btn.disabled = true;
+                btn.innerText = "Done";
+            }
+        }
+    }
+    checkCooldowns();
+
+    function completeClickTask(taskId, reward) {
+        points += reward;
+        localStorage.setItem('user_points', points);
+        localStorage.setItem(`click_task_${taskId}_time`, Date.now());
+        document.getElementById('userPoints').innerText = points;
+        
+        let btn = document.getElementById(`clickTask_${taskId}`);
+        btn.disabled = true;
+        btn.innerText = "Done";
+        alert(`Task #${taskId} completed! +${reward} points added.`);
+    }
+
+    function completeVideoTask(taskId, reward) {
+        alert("Please watch the video ad completely...");
+        setTimeout(() => {
+            points += reward;
+            localStorage.setItem('user_points', points);
+            localStorage.setItem(`video_task_${taskId}_time`, Date.now());
+            document.getElementById('userPoints').innerText = points;
+            
+            let btn = document.getElementById(`videoTask_${taskId}`);
+            btn.disabled = true;
+            btn.innerText = "Done";
+            alert(`Video Ad #${taskId} watched! +${reward} points added.`);
+        }, 2000); // 2 seconds simulation for video watch
+    }
+
+    function updateAccountPlaceholder() {
+        let method = document.getElementById('payMethod').value;
+        let input = document.getElementById('accountDetails');
+        if(method === 'JazzCash' || method === 'EasyPaisa' || method === 'SadaPay') {
+            input.placeholder = `Enter your ${method} Mobile Number`;
+        } else if(method === 'FaucetPay') {
+            input.placeholder = `Enter FaucetPay Email or ID`;
+        } else if(method === 'WebMoney') {
+            input.placeholder = `Enter WebMoney Z-Wallet (e.g. Z1234...)`;
+        } else if(method === 'Binance') {
+            input.placeholder = `Enter Binance Pay ID or USDT Address`;
+        }
+    }
+
+    function requestWithdrawal() {
+        let method = document.getElementById('payMethod').value;
+        let details = document.getElementById('accountDetails').value.trim();
+        let wPoints = parseInt(document.getElementById('withdrawPoints').value);
+
+        if(!details) {
+            alert("Please enter your account details/number!");
+            return;
+        }
+        if(isNaN(wPoints) || wPoints < 500) {
+            alert("Minimum withdrawal limit is 500 points!");
+            return;
+        }
+        if(wPoints > points) {
+            alert("You do not have enough points!");
+            return;
+        }
+
+        // Cut points instantly
+        points -= wPoints;
+        localStorage.setItem('user_points', points);
+        document.getElementById('userPoints').innerText = points;
+
+        // Construct WhatsApp Message
+        let message = `*New Withdrawal Request*%0A%0A` +
+                      `Method: ${method}%0A` +
+                      `Account/Details: ${details}%0A` +
+                      `Points Deducted: ${wPoints}%0A` +
+                      `Status: Pending Payment`;
+
+        // Open WhatsApp
+        let whatsappURL = `https://wa.me/${adminWhatsApp}?text=${message}`;
+        window.open(whatsappURL, '_blank');
+
+        alert("Withdrawal request sent! Your points have been deducted. Complete payment on WhatsApp.");
+        document.getElementById('accountDetails').value = '';
+        document.getElementById('withdrawPoints').value = '';
+    }
+</script>
+
+</body>
+</html>
