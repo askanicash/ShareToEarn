@@ -63,8 +63,34 @@
         .btn-withdraw { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 5px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
         .btn-withdraw:hover { background: #059669; }
     </style>
-</head>
+</head> <!-- Offerwall Media Card & Script (Ek Sath) -->
+<div class="task-card" style="background: #111a2e; padding: 15px; border-radius: 12px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05);">
+    <div>
+        <h4 style="color: #fff; margin: 0; font-size: 15px; font-weight: 600;">Offerwall Media Tasks</h4>
+        <p style="color: #00d26a; margin: 5px 0 0 0; font-size: 13px; font-weight: bold;">Earn Real Points</p>
+    </div>
+    <button onclick="openOfferWallMedia()" style="background: #ff8c00; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;">
+        Open
+    </button>
+</div>
+
+<script>
+function openOfferWallMedia() {
+    // 1. Check karta hai user ki ID pehle se mobile me save hai ya nahi
+    let userId = localStorage.getItem("earn_user_id");
+    
+    // 2. Agar nahi hai toh ek unique ID (jaise user_54321) bana kar save kar deta hai
+    if (!userId) {
+        userId = "user_" + Math.floor(10000 + Math.random() * 90000);
+        localStorage.setItem("earn_user_id", userId);
+    }
+
+    // 3. User ko aapke Offerwall link par nayi tab me le jata hai
+    window.open("https://offerwallmedia.com/offerwall/4jtvf2kqaqwti8n0h4fld1d8nwrp6k/" + userId, "_blank");
+}
+</script>
 <body>
+
 
 <div class="app-container">
     <div style="width: 100%; max-width: 300px; height: 250px; margin: 10px auto; border: 2px dashed #6366f1; border-radius: 12px; overflow: hidden; background: #131c31;">
