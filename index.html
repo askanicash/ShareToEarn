@@ -93,7 +93,7 @@
         <div class="task-row">
             <div class="task-info">Join WhatsApp Channel <span>Official Updates</span></div>
             <a href="https://whatsapp.com/channel/0029Vb5TqmCD38CRE3AHkC1B" target="_blank" class="action-btn" style="background: #25d366; color: #0f172a;">Join</a>
-        </div> <div class="task-row">
+        </div>  <div class="task-row">
     <div class="task-info">Offerwall Tasks <span>+30 Points</span></div>
     <button onclick="handleOfferWallClick()" id="owBtn" class="action-btn" style="background: #ff8c00; color: #ffffff; border: none; cursor: pointer;">Open</button>
 </div>
@@ -103,25 +103,33 @@ function handleOfferWallClick() {
     let btn = document.getElementById("owBtn");
 
     if (btn.innerText === "Claim") {
-        // User balance mein 30 points add karna
-        let p = parseInt(localStorage.getItem("points") || localStorage.getItem("user_points") || "0");
-        p += 30;
-        localStorage.setItem("points", p);
-        localStorage.setItem("user_points", p);
-        
+        // 1. Agar site par pehle se addPoints/updatePoints ka function hai toh use run karein
+        if (typeof addPoints === "function") {
+            addPoints(30);
+        } else if (typeof updatePoints === "function") {
+            updatePoints(30);
+        } else {
+            // 2. Har possible storage name ko update karein
+            let current = parseInt(localStorage.getItem("points") || localStorage.getItem("userPoints") || localStorage.getItem("balance") || "0");
+            current += 30;
+            localStorage.setItem("points", current);
+            localStorage.setItem("userPoints", current);
+            localStorage.setItem("balance", current);
+        }
+
         btn.innerText = "Done";
         btn.style.background = "#334155";
         btn.disabled = true;
-        
-        alert("Mubarak ho! 30 Points aapke balance mein add ho gaye.");
+
+        alert("30 Points add ho gaye!");
         location.reload();
         return;
     }
 
-    // OfferwallMedia open karein
+    // Offerwall open karein
     window.open("https://offerwallmedia.com/offerwall/4jtvf2kqaqwti8n0h4fld1d8nwrp6k/user123", "_blank");
-    
-    // Button ko Claim par convert karein
+
+    // Button par Claim lagayein
     btn.innerText = "Claim";
     btn.style.background = "#00d26a";
 }
