@@ -363,48 +363,35 @@ function addPointsToWallet(pts) {
 
         alert("Withdrawal request sent successfully! Points deducted.");
         document.getElementById('accountDetails').value = '';
-        document.getElementById('withdrawPoints').value = '';
-    } function handleOfferWallClick() {
+             
+      function handleOfferWallClick() {
     let btn = document.getElementById("owBtn");
 
-    if (btn.innerText === "Claim") {
-        // Website ke main variables dhoond kar update karna
-        if (typeof points !== "undefined") {
-            points = Number(points) + 30;
-            localStorage.setItem("points", points);
-        } else if (typeof userPoints !== "undefined") {
-            userPoints = Number(userPoints) + 30;
-            localStorage.setItem("userPoints", userPoints);
-        } else {
-            let p = Number(localStorage.getItem("points") || localStorage.getItem("userPoints") || "0") + 30;
-            localStorage.setItem("points", p);
-            localStorage.setItem("userPoints", p);
-        }
+    if (btn && btn.innerText === "Claim") {
+        points += 30;
+        localStorage.setItem('user_points', points);
+        updateUI();
 
-        // Screen update karne wale functions ko call karna
-        if (typeof updateUI === "function") updateUI();
-        if (typeof renderUI === "function") renderUI();
-        if (typeof updateDisplay === "function") updateDisplay();
-        if (typeof updatePointsDisplay === "function") updatePointsDisplay();
-
+        btn.disabled = true;
         btn.innerText = "Done";
         btn.style.background = "#334155";
-        btn.disabled = true;
 
-        alert("Mubarak ho! 30 Points aapke balance mein add ho gaye.");
-        location.reload();
+        alert("Mubarak ho! +30 Points added.");
         return;
     }
 
-    // OfferwallMedia link open karna
     let uId = localStorage.getItem("earn_user_id") || ("user_" + Math.floor(10000 + Math.random() * 90000));
     localStorage.setItem("earn_user_id", uId);
     window.open("https://offerwallmedia.com/offerwall/4jtvf2kqaqwti8n0h4fld1d8nwrp6k/" + uId, "_blank");
 
-    // Button state badalna
-    btn.innerText = "Claim";
-    btn.style.background = "#00d26a";
-}
+    if (btn) {
+        btn.innerText = "Claim";
+        btn.style.background = "#00d26a";
+    }
+
+    }
+
+    
 </script>
 
 </body>
